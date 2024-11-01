@@ -1,157 +1,370 @@
-import Link from 'next/link';
-import React from 'react';
+"use client"
+import React, { useState } from 'react'
+import Link from 'next/link'
 
-const Page = () => {
-  return (
-    <section className="flex left-1 p-8">
-      <div>
-        <Link href={`/#`}>
-          <button className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded">Back</button>
-        </Link>
-      </div>
-      <div className="relative grid grid-cols-3 bg-gray-100 p-8 rounded-lg max-w-[456px] max-h-[548px]">
+//Define the type for your items
+type Item = {
+    uniqueId: string
+    id: string
+    name: string
+    size: { height: number; width: number }
+    coords: { x: number; y: number }
+}
 
-        {/* Left Column */}
-        <div className="flex flex-col items-center justify-between cursor-pointer">
-          <div className="bg-white p-2 rounded-lg h-[80px] w-[150px] border -translate-x-[22px] -translate-y-[30px] border-gray-300 text-center mb-4">Helmet</div>
-          <div className="bg-white p-2 rounded-lg h-11 w-[150px] border -translate-x-[22px] -translate-y-[51px] border-gray-300 text-center">Necklace</div>
-          <div className="bg-white p-2 rounded-lg h-[200px] w-[150px] -translate-x-[22px] -translate-y-[57px] border border-gray-300 text-center">Sword</div>
-          <div className="bg-white p-2 rounded-lg h-[150px] w-[150px] translate-x-[-22px] -translate-y-[62px] border border-gray-300 text-center">Chest</div>
-          <div className="bg-white p-2 rounded-lg h-[65px] w-[150px] translate-x-[-22px] -translate-y-[67px] border border-gray-300 text-center">Belt</div>
-        </div>
 
-        {/* Avatar Column */}
-        <div className="flex flex-col items-center">
-          <div className="relative top-[-20px] bg-red-400 rounded-sm w-32 flex items-center justify-center mb-1">
-            Health bar
-          </div>
-          <div className="relative top-[-20px] bg-blue-400 rounded-sm w-32 flex items-center justify-center mb-1">
-            Mana bar
-          </div>
+//Initial profile setup
+const initialProfile: { [key: string]: Item | null } = {
+    //Left side of profile
+    helmet: null,
+    necklace: null,
+    sword: null,
+    chest: null,
+    belt: null,
+    //Right side of profile
+    le: null,
+    re: null,
+    gloves: null,
+    shield: null,
+    pants: null,
+    boots: null,
+}
 
-          <div className="w-[150px] h-[330px] flex items-center justify-center relative">
-            <div className="h-full w-full overflow-hidden flex justify-center items-center">
-              <div className="bg-gray-300 h-full w-full flex items-center justify-center">
-                Avatar
-              </div>
+//Initial Items
+const initialItems: Item[] = [
+    { uniqueId: 'helmet1', id: 'helmet', name: 'Iron Helmet', size: { height: 80, width: 150 }, coords: { x: -22, y: -30 } },
+    { uniqueId: 'helmet2', id: 'helmet', name: 'Steel Helmet', size: { height: 80, width: 150 }, coords: { x: -22, y: -30 } },
+    { uniqueId: 'necklace1', id: 'necklace', name: 'Iron Necklace', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'necklace2', id: 'necklace', name: 'Steel Necklace', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'sword1', id: 'sword', name: 'Iron Sword', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'sword2', id: 'sword', name: 'Steel Steel', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'chest1', id: 'chest', name: 'Steel Necklace', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'chest2', id: 'chest', name: 'Steel Necklace', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'best1', id: 'belt', name: 'Iron Belt', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'belt2', id: 'belt', name: 'Steel Belt', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'le1', id: 'le', name: 'IL', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'le2', id: 'le', name: 'SL', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 're1', id: 're', name: 'IR', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 're2', id: 're', name: 'SR', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'gloves1', id: 'gloves', name: 'Iron Gloves', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'gloves2', id: 'gloves', name: 'Steel Gloves', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'shield1', id: 'shield', name: 'Iron Shield', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'shield2', id: 'shield', name: 'Steel Shield', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'pants1', id: 'pants', name: 'Iron Pants', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'pants2', id: 'pants', name: 'Steel Pants', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'boots1', id: 'boots', name: 'Iron Boots', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+    { uniqueId: 'boots2', id: 'boots', name: 'Steel Boots', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
+
+]
+
+
+const Test4 = () => {
+    const [inventory, setInventory] = useState<Item[]>(initialItems)
+    const [profile, setProfile] = useState<{ [key: string]: Item | null }>(initialProfile)
+
+    //Handle double click on inventory item
+    const handleInventoryClick = (uniqueId: string) => {
+        const item = inventory.find(i => i.uniqueId === uniqueId)
+        if (!item) return;
+
+        // Find the corresponding profile slot based on the item ID
+        const slotKey = item.id
+
+        // If the slot is occupied, move the existing item back to inventory
+        const existingItem = profile[slotKey]
+        if (existingItem) {
+            setInventory(prev => [...prev, existingItem])
+        }
+
+        // Place the new item in the profile slot
+        setProfile(prev => ({
+            ...prev,
+            [slotKey]: item
+        }))
+
+        // Remove the selected item from inventory
+        setInventory(prev => prev.filter(i => i.uniqueId !== uniqueId))
+    }
+    //Handle double click on profile item
+    const handleProfileClick = (slotKey: string) => {
+        const item = profile[slotKey]
+        if (!item) return
+
+        console.log(`Item double-clicked in profile slot ${slotKey}:`, item)
+
+        // Return the item back to the inventory
+        setInventory(prev => {
+            // Check if the item already exists in inventory
+            const itemExists = prev.find(i => i.uniqueId === item.uniqueId)
+            if (!itemExists) {
+                return [...prev, item]; // Add the item back to the inventory
+            }
+            return prev; // If the item already exists, just return the current inventory
+        });
+
+        // Clear the profile slot
+        setProfile(prev => {
+            const updatedProfile = { ...prev, [slotKey]: null };
+            console.log("Updated Profile:", updatedProfile);
+            return updatedProfile;
+        });
+    }
+
+
+    return (
+        <section className='flex left-1 p-8'>
+            <div>
+                <Link href={`/#`}>
+                    <button className='bg-gray-300 hover:bg-gray-400 text-black
+                font-bold py-2 px-4 rounded'>Back</button>
+                </Link>
             </div>
-          </div>
+            <div className='relative grid grid-cols-3 bg-gray-100 p-8 ml-2 rounded-lg 
+        max-w-[456px] max-h-[548px]'>
+                {/*Left Column */}
+                <div className='flex flex-col items-center cursor-pointer -translate-x-[21px] 
+            -translate-y-[31px] gap-[2px]'>
+                    {/*Helmet */}
+                    <div className='bg-white rounded-lg h-[80px] w-[150px]
+                    border border-gray-300 text-center'>
+                        {Object.keys(profile)
+                            .filter((key) => key === 'helmet')
+                            .map((key) => (
+                                <div
+                                    className="flex justify-center items-center h-full"
+                                    key={key}
+                                    onDoubleClick={() => { handleProfileClick(key) }}
+                                >
+                                    {profile[key] ? profile[key]?.name : "Helmet"}
+                                </div>
+                            ))}
+                    </div>
+                    {/*Necklace */}
+                    <div className='bg-white p-2 rounded-lg h-11 w-[150px]
+                border border-gray-300 text-center'>
+                        {Object.keys(profile)
+                            .filter((key) => key === 'necklace')
+                            .map((key) => (
+                                <div
+                                    className='flex justify-center items-center h-full'
+                                    key={key}
+                                    onDoubleClick={() => { handleProfileClick(key) }}
+                                >
+                                    {profile[key] ? profile[key]?.name : "Necklace"}
+                                </div>
+                            ))}
+                    </div>
+                    {/*Sword*/}
+                    <div className='bg-white p-2 rounded-lg h-[200px] w-[150px]
+                border border-gray-300 text-center'>
+                        {Object.keys(profile)
+                            .filter((key) => key === "sword")
+                            .map((key) => (
+                                <div
+                                    className='flex justify-center items-center h-full'
+                                    key={key}
+                                    onDoubleClick={() => { handleProfileClick(key) }}
+                                >
+                                    {profile[key] ? profile[key]?.name : "Sword"}
+                                </div>
+                            ))}
+                    </div>
+                    {/*Chest*/}
+                    <div className='bg-white p-2 rounded-lg h-[150px] w-[150px]
+                border border-gray-300 text-center'>
+                        {Object.keys(profile)
+                            .filter((key) => key === 'chest')
+                            .map((key) => (
+                                <div
+                                    className='flex justify-center items-center h-full'
+                                    key={key}
+                                    onDoubleClick={() => { handleProfileClick(key) }}
+                                >
+                                    {profile[key] ? profile[key]?.name : "Chest"}
+                                </div>
+                            ))}
+                    </div>
+                    {/*Belt*/}
+                    <div className='bg-white p-2 rounded-lg h-[65px] w-[150px]
+                border border-gray-300 text-center'>
+                        {Object.keys(profile)
+                            .filter((key) => key === "belt")
+                            .map((key) => (
+                                <div
+                                    className='flex justify-center items-center h-full'
+                                    key={key}
+                                    onDoubleClick={() => { handleProfileClick(key) }}
+                                >
+                                    {profile[key] ? profile[key]?.name : "Belt"}
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+                {/*Avatar column*/}
+                <div className='flex flex-col items-center'>
+                    {/*Health Bar */}
+                    <div className='relative mb-1 bg-red-600 rounded-sm w-32 flex items-center
+                    justify-center'>Health Bar</div>
+                    {/*Mana bar*/}
+                    <div className='relative mb-1 bg-blue-600 rounded-sm w-32 flex items-center
+                    justify-center'>Mana Bar</div>
+                    <div className='w-[150px] h-[330px] border border-gray-300 bg-gray-400 flex justify-center items-center text-center'>Avatar</div>
+                    {/*Achievements*/}
+                    <div className='grid grid-cols-3 bg-gray-100 rounded-lg w-full justify-center
+                    gap-1 mt-1 cursor-pointer -translate-x-[1px]'>
+                        <div className='border rounded-lg h-10 w-11 bg-red-300'>Nr1</div>
+                        <div className='border rounded-lg h-10 w-11 bg-red-300'>Nr2</div>
+                        <div className='border rounded-lg h-10 w-11 bg-red-300'>Nr3</div>
+                        <div className='border rounded-lg h-10 w-11 bg-red-300'>Nr4</div>
+                        <div className='border rounded-lg h-10 w-11 bg-red-300'>Nr5</div>
+                        <div className='border rounded-lg h-10 w-11 bg-red-300'>Nr6</div>
+                    </div>
+                </div>
+                {/*Right Column*/}
+                <div className='flex flex-col items-center cursor-pointer -translate-x-[-20px]
+                -translate-y-[31px] gap-[2px]'>
+                    {/*Rings together*/}
+                    <div className='flex space-x-1'>
+                        {/*LE*/}
+                        <div className='bg-white p-2 rounded-lg h-10 w-[74px] border
+                        border-gray-300 text-center'>
+                            {Object.keys(profile)
+                                .filter((key) => key === "le")
+                                .map((key) => (
+                                    <div
+                                        className='flex justify-center items-center h-full'
+                                        key={key}
+                                        onDoubleClick={() => { handleProfileClick(key) }}
+                                    >
+                                        {profile[key] ? profile[key]?.name : 'LE'}
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        {/*RE*/}
+                        <div className='bg-white p-2 rounded-lg h-10 w-[74px] border
+                        border-gray-300 text-center'>
+                            {Object.keys(profile)
+                                .filter((key) => key === "re")
+                                .map((key) => (
+                                    <div
+                                        className='flex justify-center items-center h-full'
+                                        key={key}
+                                        onDoubleClick={() => { handleProfileClick(key) }}
+                                    >
+                                        {profile[key] ? profile[key]?.name : "RE"}
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                    {/*Gloves*/}
+                    <div className='bg-white p-2 rounded-lg w-[150px] h-[70px]
+                        border border-gray-300 text-center'>
+                        {Object.keys(profile)
+                            .filter((key) => key === "gloves")
+                            .map((key) => (
+                                <div
+                                    className='flex justify-center items-center h-full'
+                                    key={key}
+                                    onDoubleClick={() => { handleProfileClick(key) }}
+                                >
+                                    {profile[key] ? profile[key]?.name : "Gloves"}
+                                </div>
+                            ))
+                        }
+                    </div>
+                    {/*Shield*/}
+                    <div className='bg-white p-2 rounded-lg w-[150px] h-[200px]
+                        border border-gray-300 text-center'>
+                        {Object.keys(profile)
+                            .filter((key) => key === "shield")
+                            .map((key) => (
+                                <div
+                                    className='flex justify-center items-center h-full'
+                                    key={key}
+                                    onDoubleClick={() => { handleProfileClick(key) }}
+                                >
+                                    {profile[key] ? profile[key]?.name : "Shield"}
+                                </div>
+                            ))
+                        }
+                    </div>
+                    {/*Pants*/}
+                    <div className='bg-white p-2 rounded-lg w-[150px] h-[140px] border
+                        border-gray-300 text-center'>
+                        {Object.keys(profile)
+                            .filter((key) => key === "pants")
+                            .map((key) => (
+                                <div
+                                    className='flex justify-center items-center h-full'
+                                    key={key}
+                                    onDoubleClick={() => { handleProfileClick(key) }}
+                                >
+                                    {profile[key] ? profile[key].name : "Pants"}
+                                </div>
+                            ))
+                        }
+                    </div>
+                    {/*Boots*/}
+                    <div className='bg-white p-2 rounded-lg w-[150px] h-[90px] border
+                        border-gray-300 text-center'>
+                        {Object.keys(profile)
+                            .filter((key) => key === "boots")
+                            .map((key) => (
+                                <div
+                                    className='flex justify-center items-center h-full'
+                                    key={key}
+                                    onDoubleClick={() => { handleProfileClick(key) }}
+                                >
+                                    {profile[key] ? profile[key]?.name : "Boots"}
+                                </div>
+                            ))
+                        }
+                    </div>
 
-          <div className="grid grid-cols-3 bg-gray-100 rounded-lg w-full justify-center mr-1 gap-2 mt-5 cursor-pointer">
-            <div className='border rounded-lg h-10 w-11 bg-red-300'>nr1</div>
-            <div className='border rounded-lg h-10 w-11 bg-red-300'>nr2</div>
-            <div className='border rounded-lg h-10 w-11 bg-red-300'>nr3</div>
-            <div className='border rounded-lg h-10 w-11 bg-red-300'>nr4</div>
-            <div className='border rounded-lg h-10 w-11 bg-red-300'>nr5</div>
-            <div className='border rounded-lg h-10 w-11 bg-red-300'>nr6</div>
-          </div>
-        </div>
+                </div>
+            </div>
+            {/*Character profile stats */}
+            <div className='ml-4'>
+                <h1 className='font-bold text-xl'>Character profile:</h1>
+                <h2 className='font-bold text-lg'>Fitness:</h2>
+                <p>Breath :11111111111111</p>
+                <p>Strength</p>
+                <p>Healing</p>
+                <h2 className='font-bold text-lg'>Ability:</h2>
+                <p>Healing rate</p>
+                <p>Movement Speed</p>
+                <p>Critical hit</p>
+                <p>Gathering</p>
+                <p>Luck</p>
+                <h2 className='font-bold text-lg'>Battle Stats:</h2>
+                <p>Attack</p>
+                <p>Defense</p>
+                <p>Stamina</p>
+                <p>Item drop rate</p>
+                <p>Healing Received</p>
+            </div>
+            <div>
 
-        {/* Right Column */}
-        <div className="flex flex-col items-center justify-between cursor-pointer">
-          <div className="bg-white p-2 rounded-lg h-10 w-[74px] border -translate-x-[17px] -translate-y-[30px] border-gray-300 text-center">LE</div>
-          <div className="bg-white p-2 rounded-lg h-10 w-[74px] border -translate-x-[-58px] -translate-y-[70px] border-gray-300 text-center">RE</div>
-          <div className="bg-white p-2 rounded-lg h-[70px] w-[150px] -translate-x-[-21px] -translate-y-[69px] border border-gray-300 text-center">Gloves</div>
-          <div className="flex justify-center items-center h-[200px]">
-            <div className="bg-white p-2 rounded-lg h-[200px] w-[150px] -translate-x-[-21px] -translate-y-[68px] border border-gray-300 text-center">Shield</div>
-          </div>
-          <div className="bg-white p-2 rounded-lg h-[140px] w-[150px] -translate-x-[-21px] -translate-y-[67px] border border-gray-300 text-center">Pants</div>
-          <div className="bg-white p-2 rounded-lg h-[90px] w-[150px] -translate-x-[-21px] -translate-y-[66px] border border-gray-300 text-center">Boots</div>
-        </div>
-      </div>
+            </div>
+            {/*Inventory Section on Right Side */}
+            <div className='bg-gray-100 p-2 rounded-lg overflow-y-scroll max-h-[456px] w-[355px]
+        mt-[2px] ml-[750px]'>
+                <div className='flex justify-center items-center col-span-5 mb-4 font-bold'>Inventory</div>
+                <div className='grid grid-cols-3 gap-3 cursor-pointer'>
+                    {inventory.map(item => (
+                        <div
+                            className=' flex justify-center items-center border rounded-lg h-[100px] w-[100px] bg-yellow-50 text-center'
+                            key={item.uniqueId}
+                            onDoubleClick={() => handleInventoryClick(item.uniqueId)}
+                        >{item.name}</div>
+                    ))}
+                </div>
+            </div>
 
-      <div className='ml-4'>
-        <h1 className='font-bold text-xl'>Character profile:</h1>
-        <h2 className='font-bold text-lg'>Fitness:</h2>
-        <p>Breath</p>
-        <p>Strength</p>
-        <p>Healing</p>
-        <h2 className='font-bold text-lg'>Ability:</h2>
-        <p>Healing rate</p>
-        <p>Movement Speed</p>
-        <p>Critical hit</p>
-        <p>Gathering</p>
-        <p>Luck</p>
-        <h2 className='font-bold text-lg'>Battle Stats:</h2>
-        <p>Attack</p>
-        <p>Defense</p>
-        <p>Stamina</p>
-        <p>Item drop rate</p>
-        <p>Healing Received</p>
-      </div>
+        </section>
+    )
+}
 
-      {/* Inventory Section on Right Side */}
-      <div className="bg-gray-100 p-2 rounded-lg overflow-y-scroll max-h-[548px] w-[355px] mt-[2px] ml-[750px]">
-        <div className="flex justify-center items-center col-span-5 mb-4 font-bold">Inventory</div>
-        <div className='grid grid-cols-3 gap-3 cursor-pointer'>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-          <div className="border rounded-lg h-[100px] w-[100px] bg-yellow-200 text-center">Item 1</div>
-        </div>
-      </div>
-      {/* Chat Section */}
-      <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg p-4">
-        <div className="flex flex-col">
-          <div className="flex-grow overflow-y-auto">
-            {/* Chat messages go here */}
-            <p className="p-2 bg-gray-200 rounded-lg mb-2">User1: Hello!</p>
-            <p className="p-2 bg-blue-200 rounded-lg mb-2 self-end">User2: Hi there!</p>
-            {/* Add more messages as needed */}
-          </div>
-          <div className="flex mt-2">
-            <input
-              type="text"
-              placeholder="Type a message..."
-              className="flex-grow p-2 border rounded-lg focus:outline-none"
-            />
-            <button className="ml-2 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600">Send</button>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-export default Page;
+export default Test4
