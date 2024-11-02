@@ -1,63 +1,11 @@
 "use client"
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { Item } from '@/types/item'
+import initialProfile from '@/constats/initialProfile'
+import initialItems from '@/data/initialItems'
 
-//Define the type for your items
-type Item = {
-    uniqueId: string
-    id: string
-    name: string
-    size: { height: number; width: number }
-    coords: { x: number; y: number }
-}
-
-
-//Initial profile setup
-const initialProfile: { [key: string]: Item | null } = {
-    //Left side of profile
-    helmet: null,
-    necklace: null,
-    sword: null,
-    chest: null,
-    belt: null,
-    //Right side of profile
-    le: null,
-    re: null,
-    gloves: null,
-    shield: null,
-    pants: null,
-    boots: null,
-}
-
-//Initial Items
-const initialItems: Item[] = [
-    { uniqueId: 'helmet1', id: 'helmet', name: 'Iron Helmet', size: { height: 80, width: 150 }, coords: { x: -22, y: -30 } },
-    { uniqueId: 'helmet2', id: 'helmet', name: 'Steel Helmet', size: { height: 80, width: 150 }, coords: { x: -22, y: -30 } },
-    { uniqueId: 'necklace1', id: 'necklace', name: 'Iron Necklace', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'necklace2', id: 'necklace', name: 'Steel Necklace', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'sword1', id: 'sword', name: 'Iron Sword', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'sword2', id: 'sword', name: 'Steel Steel', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'chest1', id: 'chest', name: 'Steel Necklace', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'chest2', id: 'chest', name: 'Steel Necklace', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'best1', id: 'belt', name: 'Iron Belt', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'belt2', id: 'belt', name: 'Steel Belt', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'le1', id: 'le', name: 'IL', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'le2', id: 'le', name: 'SL', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 're1', id: 're', name: 'IR', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 're2', id: 're', name: 'SR', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'gloves1', id: 'gloves', name: 'Iron Gloves', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'gloves2', id: 'gloves', name: 'Steel Gloves', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'shield1', id: 'shield', name: 'Iron Shield', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'shield2', id: 'shield', name: 'Steel Shield', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'pants1', id: 'pants', name: 'Iron Pants', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'pants2', id: 'pants', name: 'Steel Pants', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'boots1', id: 'boots', name: 'Iron Boots', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-    { uniqueId: 'boots2', id: 'boots', name: 'Steel Boots', size: { height: 45, width: 150 }, coords: { x: -22, y: -51 } },
-
-]
-
-
-const Test4 = () => {
+const Profile = () => {
     const [inventory, setInventory] = useState<Item[]>(initialItems)
     const [profile, setProfile] = useState<{ [key: string]: Item | null }>(initialProfile)
 
@@ -88,8 +36,6 @@ const Test4 = () => {
     const handleProfileClick = (slotKey: string) => {
         const item = profile[slotKey]
         if (!item) return
-
-        console.log(`Item double-clicked in profile slot ${slotKey}:`, item)
 
         // Return the item back to the inventory
         setInventory(prev => {
@@ -367,4 +313,4 @@ const Test4 = () => {
     )
 }
 
-export default Test4
+export default Profile
