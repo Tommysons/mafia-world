@@ -6,53 +6,69 @@ interface RightColumnProps {
     handleProfileClick: (slotKey: string) => void
 }
 
-const RightColumn: React.FC<RightColumnProps> = ({ profile, handleProfileClick }) => (
-    <div className="flex flex-col items-center cursor-pointer -translate-x-[-20px]
-    -translate-y-[31px] gap-[2px]">
-        {/*Earings together*/}
-        <div className="flex space-x-1">
-            <div className="bg-white p-2 rounded-lg h-10 w-[74px] border border-gray-300 text-center">
-                {Object.keys(profile)
-                    .filter((key) => key === 'le')
-                    .map((key) => (
-                        <div
-                            className="flex justify-center items-center h-full"
-                            key={key}
-                            onDoubleClick={()=> {handleProfileClick(key)}}
-                        >
-                            {profile[key] ? profile[key]?.name : 'LE'}
-                        </div>
-                    ))
-                }
-            </div>
-            <div className="bg-white p-2 rounded-lg h-10 w-[74px] border border-gray-300 text-center">
-                {Object.keys(profile)
-                    .filter((key) => key === 're')
-                    .map((key) => (
-                        <div
-                            className="flex justify-center items-start h-full"
-                            key={key}
-                            onDoubleClick={()=> {handleProfileClick(key)}}
-                        >
-                            {profile[key] ? profile[key]?.name : "RE"}
-                        </div>
-                    ))
-                }
-            </div>
+const RightColumn: React.FC<RightColumnProps> = ({profile, handleProfileClick}) => (
+    <div className="flex flex-col justify-center cursor-pointer gap-[2px]">
+        {/*Rings together */}
+        <div className="flex space-x-1 justify-center">
+            {['le', 're'].map((earKey) => (
+                <div
+                    key={earKey}
+                    className="flex items-center justify-center text-center
+                    bg-white p-2 rounded-lg border border-gray-300"
+                    style={{
+                        width: `calc(74px * var(--scale-factor))`,
+                        height: `calc(40px * var(--scale-factor))`
+                    }}
+                    onDoubleClick={() => handleProfileClick(earKey)}
+                >
+                    {profile[earKey] ? profile[earKey]?.name
+                    : earKey.toUpperCase()}
+                </div>
+            ))}
         </div>
-        {['gloves', "shield", "pants", "boots"].map(slotKey => (
-            <div
-                key={slotKey}
-                className="flex justify-center items-center bg-white p-2 rounded-lg
-                border border-gray-300 text-center"
-                style={{height: slotKey === "gloves" ? "70px" : slotKey === "shield" ? "200px"
-                    : slotKey === "pants" ? "140px" : "90px", width: "150px"}}
-                onDoubleClick={() => handleProfileClick(slotKey)}
-            >
-                {profile[slotKey] ? profile[slotKey]?.name : slotKey.charAt(0).toUpperCase()
-                + slotKey.slice(1)}
-            </div>
-        ))}
+        {['gloves', 'shield', 'pants', 'boots'].map(slotKey => {
+            //Set base diminsions for each item
+            let baseWidth, baseHeight
+            switch(slotKey){
+                case 'gloves':
+                    baseWidth = 150
+                    baseHeight = 70
+                    break
+                case 'shield':
+                    baseWidth = 150
+                    baseHeight = 200
+                    break
+                case 'pants':
+                    baseWidth = 150
+                    baseHeight = 140
+                    break
+                case 'boots':
+                    baseWidth = 150
+                    baseHeight = 90
+                    break
+                default:
+                    baseWidth = 150
+                    baseHeight = 70
+            }
+            //Apply scaling factor to both width and height
+            const style = {
+                width: `calc(${baseWidth}px * var(--scale-factor))`,
+                height: `calc(${baseHeight}px * var(--scale-factor))`
+            }
+
+            return(
+                <div
+                    className="flex justify-center items-center bg-white p-2 rounded-lg border
+                     border-x-gray-300 text-center text-sm sm:text-base"
+                     key={slotKey}
+                     style={style}
+                     onDoubleClick={()=> handleProfileClick(slotKey)}
+                >
+                    {profile[slotKey] ? profile[slotKey]?.name
+                    : slotKey.charAt(0).toUpperCase() + slotKey.slice(1) }
+                </div>
+            )
+        })}
     </div>
 )
 

@@ -5,6 +5,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --scale-factor: 1; /* Full size on large screens */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,4 +25,29 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --scale-factor: 1; /* Reduce to 80% for medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --scale-factor: 0.8; /* Reduce to 60% for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --scale-factor: 0.6; /* Reduce to 50% for extra small screens */
+  }
+  RightColumn, .AvatarColumn {
+    transform: translate(10px, 10px); /* Move down and right */
+}
+
+.RightColumn div, .AvatarColumn div {
+    transform: translate(50px, 50px); /* Move items within the column down and right */
+}
 }
