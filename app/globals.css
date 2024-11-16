@@ -21,6 +21,49 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.chat-container{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 800px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color:#fff ;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+}
+
+.chat-messages {
+  max-height: 170px;
+  overflow-y: scroll;
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+.chat-input{
+  display: flex;
+  padding: 0.5rem;
+  
+}
+
+.chat-input-field{
+  display: flex;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.chat-send-button{
+  margin-left: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -37,6 +80,9 @@ body {
   :root {
     --scale-factor: 0.8; /* Reduce to 60% for smaller screens */
   }
+  .chat-messages{
+    max-height: 140px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -50,4 +96,9 @@ body {
 .RightColumn div, .AvatarColumn div {
     transform: translate(50px, 50px); /* Move items within the column down and right */
 }
+.chat-messages{
+  max-height: 100px;
 }
+}
+
+

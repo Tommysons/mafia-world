@@ -7,6 +7,7 @@ import RightColumn from "@/components/RightColumn";
 import { useInventoryProfile } from "@/hooks/useInventoryProfile";
 import Inventory from "@/components/Inventory";
 import Stats from "@/components/Stats";
+import Chat from "@/components/Chat";
 
 const Profile = () => {
     const { inventory, profile, handleInventoryClick, handleProfileClick } = useInventoryProfile();
@@ -15,7 +16,8 @@ const Profile = () => {
         <section className="flex flex-col items-center p-4 md:p-8">
             <div className="mb-4">
                 <Link href="/#">
-                    <button className="bg-gray-300 hover:bg-gray-800 text-black font-bold py-2 px-4 rounded">
+                    <button className="bg-gray-300 hover:bg-gray-800 text-black 
+                    font-bold py-2 px-4 rounded">
                         Back
                     </button>
                 </Link>
@@ -36,6 +38,9 @@ const Profile = () => {
                 </div>
                 {/* Inventory Section */}
                 <Inventory inventory={inventory} handleInventoryClick={handleInventoryClick}/>
+            </div>
+            <div>
+                <Chat/>
             </div>
         </section>
     );
